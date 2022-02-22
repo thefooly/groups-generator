@@ -1,0 +1,48 @@
+const path = require('path');
+const { program, InvalidArgumentError } = require('commander');
+
+const groupsGenerator = require('./src/groupGenerator');
+
+function myParseInt(value) {
+  const parsedValue = parseInt(value, 10);
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(parsedValue) || value === true) {
+    throw new InvalidArgumentError('Not a number');
+  }
+  return parsedValue;
+}
+
+program
+  .name('Random Group Generator')
+  .description('This script creates a random groups from a list of names, can be seeded')
+  .version('1.0.0');
+
+program
+  .argument('<filepath>', 'input filepath containing list of names')
+  .option('-g, --groups <number>', 'number of groups', myParseInt, 2)
+  .option('-o, --output <filepath>', 'output filepath', './output.txt')
+  .option('-s, --seed <string>', 'Seed for the randomizer', undefined)
+  .action((filepath, options) => {
+    const {
+      groups,
+      seed,
+      output,
+    } = options;
+
+    const inputPath = path.join(__dirname, filepath);
+    const outputPath = path.join(__dirname, output);
+
+    groupsGenerator({
+      inputPath,
+      outputPath,
+      groupsNumber: groups,
+      seed,
+    });
+  });
+
+program.addHelpText('after', `
+
+Example call:
+  $ node createGroups ./input.txt -g 28`);
+
+program.parse();
