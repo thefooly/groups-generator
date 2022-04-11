@@ -9,7 +9,7 @@ npm install
 # How to use
 
 ```sh
-node groupGenerator -h
+node createGroups -h
 ```
 
 ```sh
